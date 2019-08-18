@@ -98,5 +98,4 @@ export class ItemDetailComponent implements OnInit {
   
 }
 // https://content.jwplatform.com/videos/qNKw6UVW-64CHBly6.mp4
-// https://content.jwplatform.com/videos/qNKw6UVW-6K3nbDd0.mp4
 // https://content.jwplatform.com/videos/XrA53USg-64CHBly6.mp4
