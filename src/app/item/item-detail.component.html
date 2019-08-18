@@ -1,0 +1,16 @@
+<ActionBar title="Details" class="action-bar"></ActionBar>
+<FlexboxLayout flexDirection="column" class="page">
+    <FlexboxLayout class="m-15">
+        <Label class="h2" [text]="item.id + '. '"></Label>
+        <Label class="h2" [text]="item.name"></Label>
+       
+    </FlexboxLayout>
+    <Button class="btn btn-primary btn-active p-5 m-5" text="Upload Video" (tap)="openFileBrowser()"></Button>
+    <Label class="h4" [text]="item.role"></Label>
+
+    <ActivityIndicator  [busy]="isBusy" width="100" height="100" class="activity-indicator" [visibility]="isBusy? 'visible':'collapse'"></ActivityIndicator>
+
+    <Button class="btn btn-primary btn-active p-5 m-5" text="openLoader" (tap)="openLoader()"></Button>
+    <Button class="btn btn-primary btn-active p-5 m-5" text="Close loader" (tap)="closeLoader()"></Button>
+    
+</FlexboxLayout>
