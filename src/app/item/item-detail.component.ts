@@ -6,6 +6,7 @@ import { Item } from "./item";
 import { ItemService } from "./item.service";
 import { HttpClientModule, HttpClient, HttpParams } from '@angular/common/http';
 import { JWPlayerService, JWPlayerUploadResponse } from "../jwplayer.service";
+import { Video } from 'nativescript-videoplayer';
 
 
 @Component({

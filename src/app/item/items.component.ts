@@ -2,6 +2,10 @@ import { Component, OnInit } from "@angular/core";
 
 import { Item } from "./item";
 import { ItemService } from "./item.service";
+// somewhere at top of your component or bootstrap file
+import { registerElement } from "nativescript-angular/element-registry";
+import { Video } from 'nativescript-videoplayer';
+registerElement("VideoPlayer", () => Video);
 
 @Component({
     selector: "ns-items",
