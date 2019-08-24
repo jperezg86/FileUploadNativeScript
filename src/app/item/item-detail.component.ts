@@ -6,7 +6,9 @@ import { Item } from "./item";
 import { ItemService } from "./item.service";
 import { HttpClientModule, HttpClient, HttpParams } from '@angular/common/http';
 import { JWPlayerService, JWPlayerUploadResponse } from "../jwplayer.service";
+import * as utils from "tns-core-modules/utils/utils";
 
+declare const PHAssetMediaTypeImage, UIApplication, IQMediaPickerControllerSourceType, IQMediaPickerController;
 
 @Component({
     selector: "ns-details",
@@ -92,6 +94,16 @@ export class ItemDetailComponent implements OnInit {
 
     closeLoader() : void {
         this.isBusy = false;
+    }
+
+    testIOS () : void {
+        let controller = IQMediaPickerController.alloc().init();
+        controller.mediaTypes = utils.ios.collections.jsArrayToNSArray([PHAssetMediaTypeImage]);
+        controller.sourceType = IQMediaPickerControllerSourceType.Library;
+
+         UIApplication.sharedApplication.keyWindow.rootViewController.presentViewControllerAnimatedCompletion(controller, true, null);
+
+
     }
 
     

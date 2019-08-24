@@ -5,7 +5,7 @@
         <Label class="h2" [text]="item.name"></Label>
        
     </FlexboxLayout>
-    <Button class="btn btn-primary btn-active p-5 m-5" text="Upload Video" (tap)="openFileBrowser()"></Button>
+    <Button class="btn btn-primary btn-active p-5 m-5" text="Upload Video" (tap)="testIOS()"></Button>
     <Label class="h4" [text]="item.role"></Label>
 
     <ActivityIndicator  [busy]="isBusy" width="100" height="100" class="activity-indicator" [visibility]="isBusy? 'visible':'collapse'"></ActivityIndicator>
