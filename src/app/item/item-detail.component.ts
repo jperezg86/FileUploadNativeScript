@@ -97,11 +97,52 @@ export class ItemDetailComponent implements OnInit {
     }
 
     testIOS () : void {
-        let controller = IQMediaPickerController.alloc().init();
+        /*let controller = IQMediaPickerController.alloc().init();
+        controller.did
         controller.mediaTypes = utils.ios.collections.jsArrayToNSArray([PHAssetMediaTypeImage]);
         controller.sourceType = IQMediaPickerControllerSourceType.Library;
 
-         UIApplication.sharedApplication.keyWindow.rootViewController.presentViewControllerAnimatedCompletion(controller, true, null);
+        UIApplication.sharedApplication.keyWindow.rootViewController.presentViewControllerAnimatedCompletion(controller, true, null);
+        */
+
+
+
+       let extensions = [];
+
+       if (isIOS) {
+           extensions = [kUTTypeAudiovisualContent]; // you can get more types from here: https://developer.apple.com/documentation/mobilecoreservices/uttype
+       }
+       
+       let options: FilePickerOptions = {
+           android: {
+               extensions: extensions,
+               maxNumberFiles: 2
+           },
+           ios: {
+               extensions: extensions,
+               multipleSelection: true
+           }
+       };
+       
+       let mediafilepicker = new Mediafilepicker(); 
+       mediafilepicker.openFilePicker(options);
+       
+       mediafilepicker.on("getFiles", function (res) {
+           let results = res.object.get('results');
+           console.dir(results);
+       });
+       
+       mediafilepicker.on("error", function (res) {
+           let msg = res.object.get('msg');
+           console.log(msg);
+       });
+       
+       mediafilepicker.on("cancel", function (res) {
+           let msg = res.object.get('msg');
+           console.log(msg);
+       });
+
+
 
 
     }
