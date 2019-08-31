@@ -8,7 +8,16 @@ import { HttpClientModule, HttpClient, HttpParams } from '@angular/common/http';
 import { JWPlayerService, JWPlayerUploadResponse } from "../jwplayer.service";
 import * as utils from "tns-core-modules/utils/utils";
 
-declare const PHAssetMediaTypeImage, UIApplication, IQMediaPickerControllerSourceType, IQMediaPickerController;
+// declare const PHAssetMediaTypeImage, UIApplication, IQMediaPickerControllerSourceType, IQMediaPickerController;
+declare const NSFoundationVersionNumber, AVCaptureSessionPreset1920x1080,
+              AVCaptureSessionPresetHigh, AVCaptureSessionPresetMedium,
+              AVCaptureSessionPresetPhoto,AVCaptureSessionPresetInputPriority,
+              AVCaptureSessionPreset1280x720,
+              AVCaptureSessionPreset3840x2160,
+               AVCaptureSessionPresetiFrame1280x720,
+              AVCaptureSessionPreset640x480,AVCaptureSessionPreset352x288;
+              
+
 
 @Component({
     selector: "ns-details",
@@ -39,7 +48,13 @@ export class ItemDetailComponent implements OnInit {
     openFileBrowser () : void {
         let allowedVideoQualities = [];
         if (isIOS) {
-            allowedVideoQualities = ["AVCaptureSessionPreset1920x1080", "AVCaptureSessionPresetHigh"];  // get more from here: https://developer.apple.com/documentation/avfoundation/avcapturesessionpreset?language=objc
+            allowedVideoQualities = [NSFoundationVersionNumber, AVCaptureSessionPreset1920x1080,
+                AVCaptureSessionPresetHigh, AVCaptureSessionPresetMedium,
+                AVCaptureSessionPresetPhoto,AVCaptureSessionPresetInputPriority,
+                AVCaptureSessionPreset1280x720,
+                AVCaptureSessionPreset3840x2160,
+                AVCaptureSessionPresetiFrame1280x720,
+                AVCaptureSessionPreset640x480,AVCaptureSessionPreset352x288];  // get more from here: https://developer.apple.com/documentation/avfoundation/avcapturesessionpreset?language=objc
         }
         let options: VideoPickerOptions = {
             android: {
@@ -52,7 +67,7 @@ export class ItemDetailComponent implements OnInit {
             },
             ios: {
                 isCaptureMood: false, // if true then camera will open directly.
-                videoMaximumDuration: 10,
+                videoMaximumDuration: 20,
                 allowedVideoQualities: allowedVideoQualities
             }
         };
@@ -60,20 +75,40 @@ export class ItemDetailComponent implements OnInit {
         let mediafilepicker = new Mediafilepicker(); 
         mediafilepicker.openVideoPicker(options);
         this.isBusy = true;
-        mediafilepicker.on("getFiles",this.onGetFiles,this);
+        // mediafilepicker.on("getFiles",this.onGetFiles,this);
         
-        // mediafilepicker.on("getFiles", function (res) {
-        //     let results = res.object.get('results');
-        //     if(results.length > 0){
-        //         let file = results[0];
-        //         this.jwPlayerService.uploadVideo(file).then( (resp : JWPlayerUploadResponse) => {
-        //             this.closeLoader();
-        //             console.log(resp);
-        //         }).catch( (error: any) => {
-        //             this.closeLoader();
-        //         }); 
-        //     }
-        // },this);
+        mediafilepicker.on("getFiles", function (res) {
+            let results = res.object.get('results');
+            if(results.length > 0){
+                let file = results[0];
+                let fileName = file.file.substring(file.file.lastIndexOf('/')+1);
+                if(isIOS) {
+                    mediafilepicker.copyPHVideoToAppDirectory(file.urlAsset, fileName).
+                    then( (result : any) => {
+                        const fileSystemModule = require("tns-core-modules/file-system");
+                        const documents =  fileSystemModule.knownFolders.documents();
+                        const folder = documents.getFolder("filepicker");
+                        let fileName = result.file.substring(result.file.lastIndexOf('/')+1);
+                        let fileToUpload = folder.getFile(fileName);
+                        if(result.status) {
+                            console.log("Subiendo... ", fileToUpload);
+                            this.uploadVideo(fileToUpload);
+                        }
+                        
+                    } ).catch((e) => {
+                        console.dir(e);
+                    });
+                }else {
+                    this.jwPlayerService.uploadVideo(file).then( (resp : JWPlayerUploadResponse) => {
+                        // this.closeLoader();
+                        console.log(resp);
+                    }).catch( (error: any) => {
+                        // this.closeLoader();
+                    }); 
+                }
+                
+            }
+        },this);
          
         mediafilepicker.on("error", function (res) {
             let msg = res.object.get('msg');
@@ -86,6 +121,15 @@ export class ItemDetailComponent implements OnInit {
             console.log(msg);
            this.closeLoader();
         },this);
+    }
+
+
+    uploadVideo (fileURL : string) {
+        this.jwPlayerService.uploadVideo(fileURL).then( (resp : JWPlayerUploadResponse) => {
+            console.log(resp);
+        }).catch( (error: any) => {
+            console.log(error);
+        }); 
     }
 
     openLoader() : void {
@@ -105,46 +149,9 @@ export class ItemDetailComponent implements OnInit {
         UIApplication.sharedApplication.keyWindow.rootViewController.presentViewControllerAnimatedCompletion(controller, true, null);
         */
 
-
-
-       let extensions = [];
-
-       if (isIOS) {
-           extensions = [kUTTypeAudiovisualContent]; // you can get more types from here: https://developer.apple.com/documentation/mobilecoreservices/uttype
-       }
-       
-       let options: FilePickerOptions = {
-           android: {
-               extensions: extensions,
-               maxNumberFiles: 2
-           },
-           ios: {
-               extensions: extensions,
-               multipleSelection: true
-           }
-       };
-       
-       let mediafilepicker = new Mediafilepicker(); 
-       mediafilepicker.openFilePicker(options);
-       
-       mediafilepicker.on("getFiles", function (res) {
-           let results = res.object.get('results');
-           console.dir(results);
-       });
-       
-       mediafilepicker.on("error", function (res) {
-           let msg = res.object.get('msg');
-           console.log(msg);
-       });
-       
-       mediafilepicker.on("cancel", function (res) {
-           let msg = res.object.get('msg');
-           console.log(msg);
-       });
-
-
-
-
+       console.log("iOS version: " + NSFoundationVersionNumber);    
+       console.log("AVCaptureSessionPresetHigh : " + AVCaptureSessionPresetHigh);
+       console.log("AVCaptureSessionPreset1920x1080 : " + AVCaptureSessionPreset1920x1080);
     }
 
     

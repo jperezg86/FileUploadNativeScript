@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'tns-core-modules/ui/page/page';
 import { HttpClientModule, HttpClient, HttpParams } from '@angular/common/http';
 import { JWPlayerAuth } from './models/JWPlayerAuth';
+import { isAndroid, isIOS, device, screen } from "tns-core-modules/platform";
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class JWPlayerService {
   
   public API_KEY : string = "m31I4KzS";
@@ -28,6 +30,7 @@ export class JWPlayerService {
           this.http.get <JWPlayerAuth>(this.VIDEOS_CREATE_URL,{params : params})
               .subscribe( data => { 
                   this.session = data; 
+                  console.log("***** AUTH ",data);
                   if(this.session.status == "ok") {
                     resolve(this.session);
                   }else{
@@ -45,24 +48,25 @@ export class JWPlayerService {
                           success.link.address + success.link.path +
                           "?api_format=json" + "&key=" + success.link.query.key + 
                           "&token=" + success.link.query.token;
-            console.log(uploadUrl);
+            console.log("***** UPLOAD URL: " + uploadUrl);
             var bghttp = require("nativescript-background-http");
             var session = bghttp.session("video-upload");
             var request = {
               url: uploadUrl,
               method: "POST",
               headers: {
-                  "Content-Type": "application/octet-stream"
+                  "Content-Type": "multipart/form-data"
               },
               description: "Uploading Video"
           };
 
           let params = [
-            { name : 'file', filename : file.file }
+            { name : 'file', filename : (isIOS) ? file.path : file.file }
           ];
           var task = session.multipartUpload(params, request);
 
           task.on("complete", (e : any) => {
+            console.log(e);
           },this);
 
 

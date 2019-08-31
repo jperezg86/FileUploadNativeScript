@@ -1,11 +1,11 @@
 {
   "nativescript": {
     "id": "test.upload2",
-    "tns-android": {
-      "version": "6.0.0"
-    },
     "tns-ios": {
-      "version": "6.0.1"
+      "version": "6.1.0-2019-08-27-113149-01"
+    },
+    "tns-android": {
+      "version": "6.1.0-rc-2019-08-30-013300-03"
     }
   },
   "description": "NativeScript Application",
@@ -27,6 +27,7 @@
     "nativescript-mediafilepicker": "^2.0.16",
     "nativescript-theme-core": "~1.0.6",
     "nativescript-videoplayer": "^4.2.1",
+    "node-sass": "^4.12.0",
     "reflect-metadata": "~0.1.12",
     "rxjs": "~6.5.0",
     "tns-core-modules": "~6.0.0",
